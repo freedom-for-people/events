@@ -18,6 +18,9 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
     city: '',
   });
 
+  const [timeFrom, setTimeFrom] = useState('');
+  const [timeTo, setTimeTo] = useState('');
+
   const [errors, setErrors] = useState<Partial<Record<keyof EventInput, string>>>({});
   const [loading, setLoading] = useState(false);
 
@@ -31,8 +34,58 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
         country: event.country,
         city: event.city,
       });
+      
+      // Parse time range from description (e.g., "2pm-4pm")
+      const timeMatch = event.description.match(/^(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*-\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)$/i);
+      if (timeMatch) {
+        // Convert to 24-hour format for time input
+        setTimeFrom(convertTo24Hour(timeMatch[1].trim()));
+        setTimeTo(convertTo24Hour(timeMatch[2].trim()));
+      }
     }
   }, [event]);
+
+  // Convert 12-hour format to 24-hour format for time input
+  const convertTo24Hour = (time12h: string): string => {
+    const match = time12h.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
+    if (!match) return '';
+    
+    let hours = parseInt(match[1]);
+    const minutes = match[2] || '00';
+    const period = match[3].toLowerCase();
+    
+    if (period === 'pm' && hours !== 12) hours += 12;
+    if (period === 'am' && hours === 12) hours = 0;
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes}`;
+  };
+
+  // Convert 24-hour format to 12-hour format for display
+  const convertTo12Hour = (time24h: string): string => {
+    if (!time24h) return '';
+    
+    const [hours, minutes] = time24h.split(':').map(Number);
+    const period = hours >= 12 ? 'pm' : 'am';
+    const displayHours = hours % 12 || 12;
+    
+    // Only show minutes if they're not :00
+    if (minutes === 0) {
+      return `${displayHours}${period}`;
+    }
+    return `${displayHours}:${minutes.toString().padStart(2, '0')}${period}`;
+  };
+
+  // Update description when time changes
+  useEffect(() => {
+    if (timeFrom && timeTo) {
+      const fromFormatted = convertTo12Hour(timeFrom);
+      const toFormatted = convertTo12Hour(timeTo);
+      setFormData((prev) => ({
+        ...prev,
+        description: `${fromFormatted}-${toFormatted}`,
+      }));
+    }
+  }, [timeFrom, timeTo]);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof EventInput, string>> = {};
@@ -45,8 +98,8 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
     }
 
     // Description validation (stored as description but labeled as Time in UI)
-    if (!formData.description.trim()) {
-      newErrors.description = 'Time is required';
+    if (!timeFrom.trim() || !timeTo.trim()) {
+      newErrors.description = 'Both From and To times are required';
     } else if (formData.description.trim().length > 2000) {
       newErrors.description = 'Time must be 2000 characters or less';
     }
@@ -146,29 +199,25 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
           maxLength={200}
         />
 
-        <div className="w-full">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Time
-          </label>
-          <textarea
-            id="description"
-            value={formData.description}
-            onChange={(e) => handleChange('description', e.target.value)}
-            placeholder="Event time and additional details"
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            label="From"
+            type="time"
+            value={timeFrom}
+            onChange={(e) => setTimeFrom(e.target.value)}
             disabled={loading}
-            maxLength={2000}
-            rows={4}
-            className={`
-              w-full px-3 py-2 border rounded-md shadow-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              disabled:bg-gray-100 disabled:cursor-not-allowed
-              ${errors.description ? 'border-red-500' : 'border-gray-300'}
-            `}
           />
-          {errors.description && (
-            <p className="mt-1 text-sm text-red-600">{errors.description}</p>
-          )}
+          <Input
+            label="To"
+            type="time"
+            value={timeTo}
+            onChange={(e) => setTimeTo(e.target.value)}
+            disabled={loading}
+          />
         </div>
+        {errors.description && (
+          <p className="text-sm text-red-600 -mt-2">{errors.description}</p>
+        )}
 
         <Input
           label="Date"

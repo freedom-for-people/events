@@ -3,7 +3,7 @@ import React from 'react';
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
-  type?: 'text' | 'email' | 'password' | 'date';
+  type?: 'text' | 'email' | 'password' | 'date' | 'time';
 }
 
 export const Input: React.FC<InputProps> = ({
