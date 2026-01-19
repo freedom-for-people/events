@@ -73,11 +73,11 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
       newErrors.country = 'Country must be 100 characters or less';
     }
 
-    // City validation
+    // City validation (stored as city but labeled as Address in UI)
     if (!formData.city.trim()) {
-      newErrors.city = 'City is required';
+      newErrors.city = 'Address is required';
     } else if (formData.city.trim().length > 100) {
-      newErrors.city = 'City must be 100 characters or less';
+      newErrors.city = 'Address must be 100 characters or less';
     }
 
     setErrors(newErrors);
@@ -191,12 +191,12 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
         />
 
         <Input
-          label="City"
+          label="Address"
           type="text"
           value={formData.city}
           onChange={(e) => handleChange('city', e.target.value)}
           error={errors.city}
-          placeholder="City name"
+          placeholder="City or full address"
           disabled={loading}
           maxLength={100}
         />

@@ -129,7 +129,7 @@ export const EventTable: React.FC<EventTableProps> = ({ events, onEdit, onDelete
                 onClick={() => handleSort('city')}
               >
                 <div className="flex items-center gap-1">
-                  City
+                  Address
                   <SortIcon field="city" />
                 </div>
               </th>
