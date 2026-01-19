@@ -7,8 +7,10 @@ interface EventCardProps {
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   // Format date without year
+  // Parse date components directly to avoid timezone conversion issues
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
