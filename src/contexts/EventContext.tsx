@@ -7,6 +7,7 @@ interface EventContextType {
   loading: boolean;
   error: string | null;
   refreshEvents: () => Promise<void>;
+  refreshUpcomingEvents: () => Promise<void>;
   createEvent: (data: EventInput) => Promise<Event>;
   updateEvent: (id: string, data: EventInput) => Promise<Event>;
   deleteEvent: (id: string) => Promise<void>;
@@ -29,6 +30,21 @@ export function EventProvider({ children }: { children: React.ReactNode }) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch events';
       setError(errorMessage);
       console.error('Error fetching events:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const refreshUpcomingEvents = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const fetchedEvents = await eventService.getUpcomingEvents();
+      setEvents(fetchedEvents);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch upcoming events';
+      setError(errorMessage);
+      console.error('Error fetching upcoming events:', err);
     } finally {
       setLoading(false);
     }
@@ -94,6 +110,7 @@ export function EventProvider({ children }: { children: React.ReactNode }) {
     loading,
     error,
     refreshEvents,
+    refreshUpcomingEvents,
     createEvent,
     updateEvent,
     deleteEvent,

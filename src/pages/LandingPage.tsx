@@ -4,11 +4,11 @@ import { Layout, LoadingSpinner } from '../components/shared';
 import { useEvents } from '../contexts/EventContext';
 
 export const LandingPage: React.FC = () => {
-  const { events, loading, error, refreshEvents } = useEvents();
+  const { events, loading, error, refreshUpcomingEvents } = useEvents();
 
   useEffect(() => {
-    refreshEvents();
-  }, [refreshEvents]);
+    refreshUpcomingEvents();
+  }, [refreshUpcomingEvents]);
 
   if (loading) {
     return (
@@ -43,7 +43,7 @@ export const LandingPage: React.FC = () => {
             </h2>
             <p className="text-sm text-red-700 mb-4">{error}</p>
             <button
-              onClick={() => refreshEvents()}
+              onClick={() => refreshUpcomingEvents()}
               className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             >
               Try Again

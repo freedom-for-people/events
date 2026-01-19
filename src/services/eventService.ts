@@ -32,6 +32,37 @@ export async function getAllEvents(): Promise<Event[]> {
 }
 
 /**
+ * Fetch only upcoming events (today and future dates)
+ * @returns Promise resolving to array of upcoming events
+ * @throws Error if database query fails
+ */
+export async function getUpcomingEvents(): Promise<Event[]> {
+  try {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
+
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .gte('date', todayStr)
+      .order('date', { ascending: true });
+
+    if (error) {
+      throw new Error(`Failed to fetch upcoming events: ${error.message}`);
+    }
+
+    return data || [];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('An unexpected error occurred while fetching upcoming events');
+  }
+}
+
+/**
  * Fetch events filtered by country
  * @param country - The country to filter by
  * @returns Promise resolving to array of events in the specified country
