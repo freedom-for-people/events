@@ -38,7 +38,7 @@ export const COUNTRIES = [
   { name: 'Burundi', flag: '��' },
   { name: 'Cambodia', flag: '��' },
   { name: 'Cameroon', flag: '�🇲' },
-  { name: 'Canada', flag: '��' },
+  { name: 'Canada', flag: '🇨🇦' },
   { name: 'Cape Verde', flag: '��' },
   { name: 'Caribbean Netherlands', flag: '��' },
   { name: 'Cayman Islands', flag: '��' },
