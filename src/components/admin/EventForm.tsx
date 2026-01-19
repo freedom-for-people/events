@@ -44,11 +44,11 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
       newErrors.title = 'Title must be 200 characters or less';
     }
 
-    // Description validation
+    // Description validation (stored as description but labeled as Time in UI)
     if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = 'Time is required';
     } else if (formData.description.trim().length > 2000) {
-      newErrors.description = 'Description must be 2000 characters or less';
+      newErrors.description = 'Time must be 2000 characters or less';
     }
 
     // Date validation
@@ -148,13 +148,13 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
 
         <div className="w-full">
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description
+            Time
           </label>
           <textarea
             id="description"
             value={formData.description}
             onChange={(e) => handleChange('description', e.target.value)}
-            placeholder="Event description"
+            placeholder="Event time and additional details"
             disabled={loading}
             maxLength={2000}
             rows={4}
