@@ -56,8 +56,8 @@ export const LandingPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="page-transition py-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Events</h1>
+      <div className="page-transition py-3">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">Events</h1>
         <EventList events={events} />
       </div>
     </Layout>
