@@ -75,11 +75,11 @@ export const EventList: React.FC<EventListProps> = ({ events }) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       {groupedAndSortedEvents.map((group, index) => (
         <div
           key={group.country}
-          className={`animate-fade-in${index < 3 ? `-delay-${index + 1}` : ''}`}
+          className={`animate-fade-in${index < 3 ? `-delay-${index + 1}` : ''} mb-0`}
         >
           <CountrySection
             country={group.country}
