@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '../shared/Input';
 import { Button } from '../shared/Button';
 import type { Event, EventInput } from '../../types';
+import { COUNTRIES } from '../../data/countries';
 
 interface EventFormProps {
   event?: Event;
@@ -20,6 +21,8 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
 
   const [timeFrom, setTimeFrom] = useState('');
   const [timeTo, setTimeTo] = useState('');
+  const [countryName, setCountryName] = useState('');
+  const [countryFlag, setCountryFlag] = useState('');
 
   const [errors, setErrors] = useState<Partial<Record<keyof EventInput, string>>>({});
   const [loading, setLoading] = useState(false);
@@ -35,6 +38,16 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
         city: event.city,
       });
       
+      // Parse country name and flag (e.g., "United States 🇺🇸")
+      const countryMatch = event.country.match(/^(.+?)\s+([\u{1F1E6}-\u{1F1FF}]{2})$/u);
+      if (countryMatch) {
+        setCountryName(countryMatch[1].trim());
+        setCountryFlag(countryMatch[2]);
+      } else {
+        setCountryName(event.country);
+        setCountryFlag('');
+      }
+      
       // Parse time range from description (e.g., "2pm-4pm")
       const timeMatch = event.description.match(/^(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s*-\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)$/i);
       if (timeMatch) {
@@ -44,6 +57,16 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
       }
     }
   }, [event]);
+
+  // Update country when name or flag changes
+  useEffect(() => {
+    if (countryName) {
+      setFormData((prev) => ({
+        ...prev,
+        country: countryFlag ? `${countryName} ${countryFlag}` : countryName,
+      }));
+    }
+  }, [countryName, countryFlag]);
 
   // Convert 12-hour format to 24-hour format for time input
   const convertTo24Hour = (time12h: string): string => {
@@ -120,10 +143,15 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
     }
 
     // Country validation
-    if (!formData.country.trim()) {
+    if (!countryName.trim()) {
       newErrors.country = 'Country is required';
-    } else if (formData.country.trim().length > 100) {
+    } else if (countryName.trim().length > 100) {
       newErrors.country = 'Country must be 100 characters or less';
+    }
+    
+    // Flag validation (optional but if provided, must be emoji)
+    if (countryFlag && !/^[\u{1F1E6}-\u{1F1FF}]{2}$/u.test(countryFlag)) {
+      newErrors.country = 'Flag must be a valid flag emoji';
     }
 
     // City validation (stored as city but labeled as Address in UI)
@@ -228,16 +256,37 @@ export const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel 
           disabled={loading}
         />
 
-        <Input
-          label="Country"
-          type="text"
-          value={formData.country}
-          onChange={(e) => handleChange('country', e.target.value)}
-          error={errors.country}
-          placeholder="Country name"
-          disabled={loading}
-          maxLength={100}
-        />
+        <div className="w-full">
+          <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+            Country
+          </label>
+          <select
+            id="country"
+            value={countryName}
+            onChange={(e) => {
+              const selectedCountry = COUNTRIES.find(c => c.name === e.target.value);
+              setCountryName(e.target.value);
+              setCountryFlag(selectedCountry?.flag || '');
+            }}
+            disabled={loading}
+            className={`
+              w-full px-3 py-2 border rounded-md shadow-sm
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+              disabled:bg-gray-100 disabled:cursor-not-allowed
+              ${errors.country ? 'border-red-500' : 'border-gray-300'}
+            `}
+          >
+            <option value="">Select a country</option>
+            {COUNTRIES.map((country) => (
+              <option key={country.name} value={country.name}>
+                {country.flag} {country.name}
+              </option>
+            ))}
+          </select>
+          {errors.country && (
+            <p className="mt-1 text-sm text-red-600">{errors.country}</p>
+          )}
+        </div>
 
         <Input
           label="Address"
