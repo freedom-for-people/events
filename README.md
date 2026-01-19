@@ -1,73 +1,108 @@
-# React + TypeScript + Vite
+# Event Landing Page with Admin Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, minimal web application for displaying and managing events. Built with React, TypeScript, Tailwind CSS, and Supabase.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Public Landing Page**: Browse all events organized by country
+- **Admin Panel**: Secure interface for managing events (create, edit, delete)
+- **Responsive Design**: Works seamlessly on mobile, tablet, and desktop
+- **Modern UI**: Clean, minimal aesthetic with smooth animations
+- **Real-time Data**: Powered by Supabase for instant updates
 
-## React Compiler
+## 🚀 Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**⚠️ IMPORTANT: You must set up Supabase before running the application!**
 
-## Expanding the ESLint configuration
+See **[SETUP.md](./SETUP.md)** for detailed setup instructions.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 18+ installed
+- A Supabase account (free tier works great)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Clone and install dependencies:**
+   ```bash
+   cd event-landing-page
+   npm install
+   ```
+
+2. **Set up Supabase:**
+   - Follow the complete guide in [SETUP.md](./SETUP.md)
+   - Create a Supabase project
+   - Run the database migrations
+   - Create a `.env` file with your credentials
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser:**
+   - Landing page: [http://localhost:5173](http://localhost:5173)
+   - Admin login: [http://localhost:5173/login](http://localhost:5173/login)
+
+## 📁 Project Structure
+
+```
+event-landing-page/
+├── src/
+│   ├── components/       # React components
+│   │   ├── landing/     # Public landing page components
+│   │   ├── admin/       # Admin panel components
+│   │   └── shared/      # Reusable UI components
+│   ├── contexts/        # React Context providers
+│   ├── services/        # API and service layer
+│   ├── pages/           # Page components
+│   └── types/           # TypeScript type definitions
+├── supabase/
+│   └── migrations/      # Database migration files
+└── .env.example         # Environment variable template
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Available Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run test` - Run tests
+- `npm run lint` - Lint code
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🔧 Technology Stack
+
+- **Frontend**: React 18 + TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Supabase (PostgreSQL + Authentication)
+- **Build Tool**: Vite
+- **Deployment**: Netlify-ready
+
+## 📖 Documentation
+
+- **[SETUP.md](./SETUP.md)** - Complete setup guide
+- **[.env.example](./.env.example)** - Environment variables reference
+- **[Design Document](./.kiro/specs/event-landing-page/design.md)** - Technical design
+- **[Requirements](./.kiro/specs/event-landing-page/requirements.md)** - Feature requirements
+
+## 🐛 Troubleshooting
+
+### Blank landing page?
+- Check the browser console for errors (F12)
+- Verify your `.env` file exists and has correct Supabase credentials
+- Ensure database migrations have been run
+- Add some sample events to the database (see SETUP.md)
+
+### Can't log in to admin panel?
+- Verify you created an admin user in Supabase Authentication
+- Check that email and password are correct
+
+### "Missing Supabase environment variables" error?
+- Create a `.env` file based on `.env.example`
+- Restart the development server after creating the file
+
+See [SETUP.md](./SETUP.md) for more troubleshooting tips.
+
+## 📝 License
+
+MIT
