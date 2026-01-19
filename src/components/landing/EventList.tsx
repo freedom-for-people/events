@@ -75,7 +75,7 @@ export const EventList: React.FC<EventListProps> = ({ events }) => {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 lg:space-y-12">
+    <div className="space-y-6">
       {groupedAndSortedEvents.map((group, index) => (
         <div
           key={group.country}
